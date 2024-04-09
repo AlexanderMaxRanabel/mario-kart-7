@@ -9,6 +9,7 @@ import (
 
 var AuthenticationServerAccount *nex.Account
 var SecureServerAccount *nex.Account
+var UnknownServerAccount *nex.Account
 
 func AccountDetailsByPID(pid *types.PID) (*nex.Account, *nex.Error) {
 	if pid.Equals(AuthenticationServerAccount.PID) {
@@ -30,13 +31,14 @@ func AccountDetailsByPID(pid *types.PID) (*nex.Account, *nex.Error) {
 }
 
 func AccountDetailsByUsername(username string) (*nex.Account, *nex.Error) {
-	if username == AuthenticationServerAccount.Username {
-		return AuthenticationServerAccount, nil
-	}
-
-	if username == SecureServerAccount.Username {
-		return SecureServerAccount, nil
-	}
+  switch username {
+    case AuthenticationServerAccount.Username: 
+      return AuthenticationServerAccount, nil
+    case SecureServerAccount.Username:
+      return SecureServerAccount, nil
+    default:
+      return UnknownServerAccount, nil
+  }
 
 	pidInt, err := strconv.Atoi(username)
 	if err != nil {
